@@ -1,11 +1,8 @@
-import { AbstractController } from "../util/rest/controller";
+import { NextFunction,Response } from "express";
 import APP_CONSTANTS from "../constants";
-import { Request, Response, NextFunction } from "express";
-import RequestWithUser from "../util/rest/request";
-import validationMiddleware from "../middleware/validationMiddleware";
-import { CreateEmployeeDto } from "../dto/CreateEmployee";
-import HttpException from "../exception/HttpException";
 import { AddressService } from "../services/AddressService";
+import { AbstractController } from "../util/rest/controller";
+import RequestWithUser from "../util/rest/request";
 
 class AddressController extends AbstractController{
     constructor(
@@ -18,23 +15,23 @@ class AddressController extends AbstractController{
     protected initializeRoutes(): void {
         this.router.post(
             `${this.path}`,
-            this.createAddr
+            this.createAddress
         )
 
         this.router.get(
             `${this.path}`,
-            this.getAllAddress
+            this.getAddressById
         )
         
     }
 
-    private createAddr = async (
+    private createAddress = async (
         request : RequestWithUser,
         response : Response,
         next : NextFunction
     ) => {
         try{
-            const data = await this.addrService.createAddr(request.body);
+            const data = await this.addrService.createAddress(request.body);
             response.send(
                 this.fmt.formatResponse(data, Date.now() - request.startTime, "OK")
             );
@@ -44,12 +41,12 @@ class AddressController extends AbstractController{
         }
     }
 
-    private getAllAddress = async (
+    private getAddressById = async (
         request: RequestWithUser,
         response: Response,
         next: NextFunction
       ) => {
-        const data = await this.addrService.getAllAddress();
+        const data = await this.addrService.getAddressById(request.body);
         response.send(
           this.fmt.formatResponse(data, Date.now() - request.startTime, "OK")
         );
@@ -57,4 +54,3 @@ class AddressController extends AbstractController{
 
 }
 
-export default AddressController

@@ -2,20 +2,21 @@ import { plainToClass } from "class-transformer";
 import { Address } from "../entities/Address";
 import { AddressRepository } from "../repository/AddressRepository";
 
-export class AddressService{
+export class AddressService {
     constructor(
-        private addrRepository : AddressRepository
-    ){}
-
-    public async createAddr(addrInput: any){
-        const addrData = plainToClass(Address, {
-            "address" : addrInput.address
-        });
-        const savedDetails = await this.addrRepository.createAddress(addrData);
-        return savedDetails;
+        private addressRepository: AddressRepository
+    ) {}
+    public async createAddress(addressInput : any){
+        const addressData  = plainToClass(Address,{
+            "streetName": addressInput.streetName,
+            "district": addressInput.district,
+            "State":addressInput.state,
+            "zip":addressInput.pin
+        })
+        const savedDet = await this.addressRepository.createAddress(addressData);
+        return savedDet;
     }
-
-    public async getAllAddress(){
-        return this.addrRepository.getAllAddress();
+    public async getAddressById(addressId: string) {
+        return await this.addressRepository.getAddressById(addressId);
     }
 }
