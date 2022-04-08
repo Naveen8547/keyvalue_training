@@ -1,7 +1,10 @@
 import { NextFunction, Response } from "express";
+import { request } from "http";
 import multer from "multer";
 import APP_CONSTANTS from "../constants";
 import { CreateEmployeeDto } from "../dto/CreateEmployee";
+import IncorrectUsernameOrPasswordException from "../exception/IncorrectUsenameOrPasswordException";
+import authorize from "../middleware/authorize";
 import validationMiddleware from "../middleware/validationMiddleware";
 import { EmployeeService } from "../services/EmployeeService";
 import { AbstractController } from "../util/rest/controller";
@@ -23,6 +26,7 @@ class EmployeeController extends AbstractController {
   protected initializeRoutes = (): void => {
     this.router.get(
       `${this.path}`,
+      authorize(),   // this function is called,the return is middleware
       this.asyncRouteHandler(this.getAllEmployees)
     );
     this.router.get(
@@ -48,6 +52,11 @@ class EmployeeController extends AbstractController {
       `${this.path}/upload`,
       this.upload.single("file"),
       this.asyncRouteHandler(this.uploadImage)
+    );
+
+    this.router.post(
+      `${this.path}/login`,
+      this.asyncRouteHandler(this.login)
     );
   }
 
@@ -99,6 +108,8 @@ class EmployeeController extends AbstractController {
       );
   }
 
+  
+
   private deleteEmployee = async (
     request: RequestWithUser,
     response: Response,
@@ -124,6 +135,19 @@ class EmployeeController extends AbstractController {
       )
     );
   }
+
+  private login = async (
+    request: RequestWithUser,
+    response: Response,
+    next: NextFunction
+  ) => {
+    const data = await this.employeeService.employeeLogin(request.body.username, request.body.password);
+    response.status(201).send(
+      this.fmt.formatResponse(data, Date.now() - request.startTime, "OK")
+    );
+  }
+
+
 
 }
 

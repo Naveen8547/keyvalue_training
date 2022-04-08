@@ -1,3 +1,6 @@
+// This entire files contains middlewares!
+
+
 import { EventEmitter } from "events";
 import swaggerJSDoc from "swagger-jsdoc";
 import bodyParser from "body-parser";

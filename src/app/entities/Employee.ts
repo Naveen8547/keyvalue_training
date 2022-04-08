@@ -1,5 +1,8 @@
+
+import { type } from "os";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AbstractEntity } from "./AbstractEntity";
+import { Address } from "./Address";
 import { Department } from "./Department";
 
 @Entity("employee")
@@ -25,6 +28,13 @@ export class Employee extends AbstractEntity {
     @ManyToOne((type) => Department, { cascade: true })
     @JoinColumn()
     public department: Department;
+    
+    
+    @OneToOne((type) => Address, { cascade: true })
+    @JoinColumn()
+    public address: Address;
+
+
 
     @Column()
     public departmentId: string;
